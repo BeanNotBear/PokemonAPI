@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-// pokemon controller test
 @RestController
 @RequestMapping("/api")
 public class PokemonController {
