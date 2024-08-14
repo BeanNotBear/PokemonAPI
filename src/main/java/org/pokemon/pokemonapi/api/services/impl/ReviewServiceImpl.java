@@ -35,7 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponse findReviewByPokemonId(Integer pokemonId, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Review> reviews = reviewRepository.findReviewsByPokemonId(pokemonId, pageable);
+        Page<Review> reviews = reviewRepository.findReviewsByPokemonId(pokemonId, pageable).get();
         List<ReviewDTO> reviewDTOs = reviews.getContent()
                 .stream().map(review -> ReviewMapper.toReviewDTO(review)).collect(Collectors.toList());
         ReviewResponse reviewResponse = new ReviewResponse(
