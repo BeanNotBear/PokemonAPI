@@ -1,8 +1,11 @@
 package org.pokemon.pokemonapi.api.controllers;
 
 import org.pokemon.pokemonapi.api.dto.PokemonDTO;
+import org.pokemon.pokemonapi.api.dto.PokemonResponse;
 import org.pokemon.pokemonapi.api.services.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +22,16 @@ public class PokemonController {
         this.pokemonService = pokemonService;
     }
 
-    @GetMapping("/pokemons")
-    public ResponseEntity<List<PokemonDTO>> getAll() {
-        List<PokemonDTO> pokemons = pokemonService.findAll();
-        return new ResponseEntity<List<PokemonDTO>>(pokemons, HttpStatus.OK);
+    @GetMapping("/pokemon")
+    public ResponseEntity<PokemonResponse> getAll(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int pageSize
+    ) {
+        PokemonResponse pokemonResponse = pokemonService.findAll(page, pageSize);
+        return new ResponseEntity<PokemonResponse>(pokemonResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/pokemons/{id}")
+    @GetMapping("/pokemon/{id}")
     public ResponseEntity<PokemonDTO> gePokemonById(
             @PathVariable Integer id
     ) {
@@ -33,7 +39,7 @@ public class PokemonController {
         return new ResponseEntity<PokemonDTO>(pokemon, HttpStatus.OK);
     }
 
-    @PostMapping("/pokemons")
+    @PostMapping("/pokemon")
     public ResponseEntity<PokemonDTO> creatPokemon(
             @RequestBody PokemonDTO pokemon
     ) {
@@ -41,7 +47,7 @@ public class PokemonController {
         return new ResponseEntity<PokemonDTO>(createdPokemon, HttpStatus.CREATED);
     }
 
-    @PutMapping("/pokemons/{id}")
+    @PutMapping("/pokemon/{id}")
     public ResponseEntity<PokemonDTO> updatePokemon(
             @PathVariable Integer id,
             @RequestBody PokemonDTO pokemon
@@ -50,7 +56,7 @@ public class PokemonController {
         return new ResponseEntity<PokemonDTO>(updatedPokemon, HttpStatus.OK);
     }
 
-    @DeleteMapping("/pokemons/{id}")
+    @DeleteMapping("/pokemon/{id}")
     public ResponseEntity<Void> deletePokemon(
             @PathVariable Integer id
     ) {
