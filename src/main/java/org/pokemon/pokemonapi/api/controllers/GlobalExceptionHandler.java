@@ -1,6 +1,6 @@
 package org.pokemon.pokemonapi.api.controllers;
 
-import org.pokemon.pokemonapi.api.exceptions.ErrorResponse;
+import org.pokemon.pokemonapi.api.dto.ErrorResponse;
 import org.pokemon.pokemonapi.api.exceptions.PokemonNotFoundException;
 import org.pokemon.pokemonapi.api.exceptions.ReviewNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
-import java.sql.SQLException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

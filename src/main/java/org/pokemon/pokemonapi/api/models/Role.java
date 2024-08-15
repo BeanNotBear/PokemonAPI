@@ -1,11 +1,14 @@
 package org.pokemon.pokemonapi.api.models;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
     @Id
