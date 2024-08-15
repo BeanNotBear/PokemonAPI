@@ -1,4 +1,4 @@
-package org.pokemon.pokemonapi.api.exceptions;
+package org.pokemon.pokemonapi.api.dto;
 
 import java.util.Date;
 

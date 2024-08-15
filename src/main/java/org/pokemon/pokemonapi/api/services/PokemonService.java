@@ -1,10 +1,9 @@
 package org.pokemon.pokemonapi.api.services;
 import org.pokemon.pokemonapi.api.dto.PokemonDTO;
-
-import java.util.List;
+import org.pokemon.pokemonapi.api.dto.PokemonResponse;
 
 public interface PokemonService {
-    List <PokemonDTO> findAll();
+    PokemonResponse findAll(int page, int pageSize);
 
     PokemonDTO findById(Integer id);
 
