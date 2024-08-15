@@ -9,50 +9,38 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
     private CustomUsersDetailService customUsersDetailService;
 
     @Autowired
-    public SecurityConfig(CustomUsersDetailService customUsersDetailService) {
-        this.customUsersDetailService = customUsersDetailService;
-    }
+    private JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // disables Cross-Site Request Forgery (CSRF) protection
-        http.csrf(customizer -> customizer.disable());
-
-
-        // all request must be authenticated
-        // http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
-
-        // allow request to GET method at /api/pokemon/**
-        http.authorizeHttpRequests(request ->
-        {
-            request.requestMatchers(HttpMethod.GET, "/api/pokemon/**").permitAll();
-            request.requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll();
-        });
-
-        // all request to /api/pokemon/** must be authenticated
-        http.authorizeHttpRequests(request ->
-        {
-            request.anyRequest().authenticated();
-        });
-
-        // request to login form is allowed
-        http.formLogin(Customizer.withDefaults());
-
-        // allow authentication basic
-        // using postman with auth basic
-        http.httpBasic(Customizer.withDefaults());
+        http.csrf(customizer -> customizer.disable())
+                .authorizeHttpRequests(request ->
+                {
+                    request.requestMatchers(HttpMethod.GET, "/api/pokemon/**").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/api/pokemon/**").hasAnyAuthority("ADMIN");
+                    request.requestMatchers(HttpMethod.PUT, "/api/pokemon/**").hasAnyAuthority("ADMIN");
+                    request.requestMatchers(HttpMethod.DELETE, "/api/pokemon/**").hasAnyAuthority("ADMIN");
+                    request.anyRequest().authenticated();
+                })
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

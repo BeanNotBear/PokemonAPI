@@ -7,8 +7,7 @@ import org.pokemon.pokemonapi.api.models.Account;
 import org.pokemon.pokemonapi.api.models.Role;
 import org.pokemon.pokemonapi.api.repositories.AccountRepository;
 import org.pokemon.pokemonapi.api.repositories.RoleRepository;
-import org.pokemon.pokemonapi.api.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.pokemon.pokemonapi.api.security.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @RestController
@@ -28,14 +26,14 @@ public class AuthController {
     private AccountRepository accountRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtService jwtService;
 
-    public AuthController(AuthenticationManager authenticationManager, AccountRepository accountRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(AuthenticationManager authenticationManager, AccountRepository accountRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
@@ -46,7 +44,7 @@ public class AuthController {
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username()
                         , loginDTO.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.generateToken(authentication);
+        String token = jwtService.generateToken(authentication);
         AuthResponse authResponse = new AuthResponse(HttpStatus.OK.value(), token);
         return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.OK);
     }
